@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.min.css"/>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.8/dc.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
+</head>
+</head>
+<body>
+    <div id="chart-here"></div>
+    <script>
+       queue()
+            .defer(d3.json, "data/transactions.json")
+            .await(makeGraphs);
+        
+    function makeGraphs(){
+        let ndx = crossfilter(transactionData);
+        let name_dim = ndx.dimension(dc.pluck('name'));
+        let spend_by_name = name_dim.group().reduceSum(dc.pluck('spend'));
+    }
+    
+    dc.rowChart("#chart-here")
+        .width(600)
+        .height(330)
+        .dimension(name_dim)
+        .group(spend_by_name)
+        .xAxis().ticks(4);
+        
+        dc.renderAll();
+        
+        
+    </script>
+</body>
+</html>
